@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Liberar Cópia",
+  "version": "1.0",
+  "description": "Remove bloqueios de cópia e seleção de texto nos sites.",
+  "permissions": ["scripting", "activeTab"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Liberar Cópia"
+  }
+}
