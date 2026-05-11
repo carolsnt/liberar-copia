@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Liberar Cópia",
+  "version": "2.0",
+  "description": "Remove bloqueios de cópia e seleção.",
+  "permissions": [
+    "scripting",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Liberar Cópia"
+  }
+}
