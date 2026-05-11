@@ -1,15 +1,13 @@
 (() => {
-  // Remove bloqueios inline
-  document.oncontextmenu = null;
-  document.onselectstart = null;
-  document.onmousedown = null;
-  document.oncopy = null;
-  document.oncut = null;
-  document.onpaste = null;
-  document.onkeydown = null;
+  console.log("✔️ Liberar Cópia ativo");
 
-  // CSS da extensão
+  // =========================
+  // CSS de desbloqueio + seleção visual
+  // =========================
+
   const style = document.createElement("style");
+
+  style.id = "lc-style";
 
   style.innerHTML = `
     * {
@@ -17,44 +15,83 @@
       -webkit-user-select: text !important;
       -moz-user-select: text !important;
       -ms-user-select: text !important;
+      -webkit-touch-callout: default !important;
     }
 
+    /* Marca-texto azul transparente */
+
     ::selection {
-      background: rgba(0, 140, 255, 0.35) !important;
-      color: inherit !important;
+      background: rgba(0, 140, 255, 0.45) !important;
+      color: #000 !important;
     }
 
     ::-moz-selection {
-      background: rgba(0, 140, 255, 0.35) !important;
-      color: inherit !important;
+      background: rgba(0, 140, 255, 0.45) !important;
+      color: #000 !important;
+    }
+
+    img,
+    video {
+      pointer-events: auto !important;
     }
   `;
 
-  document.head.appendChild(style);
+  document.documentElement.appendChild(style);
 
-  console.log("✔️ Liberar Cópia ativado");
+  // =========================
+  // Reinjeta CSS se site remover
+  // =========================
 
-  // Indicador visual no canto
-  const badge = document.createElement("div");
+  setInterval(() => {
+    if (!document.getElementById("lc-style")) {
+      document.documentElement.appendChild(style);
+    }
+  }, 2000);
 
-  badge.innerText = "Liberar Cópia ON";
+  // =========================
+  // Mata eventos de bloqueio
+  // =========================
 
-  badge.style.position = "fixed";
-  badge.style.bottom = "20px";
-  badge.style.right = "20px";
-  badge.style.zIndex = "999999";
-  badge.style.padding = "10px 14px";
-  badge.style.background = "rgba(0, 140, 255, 0.9)";
-  badge.style.color = "#fff";
-  badge.style.fontSize = "14px";
-  badge.style.fontFamily = "sans-serif";
-  badge.style.borderRadius = "12px";
-  badge.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
-  badge.style.backdropFilter = "blur(6px)";
+  const blockEvents = [
+    "copy",
+    "cut",
+    "paste",
+    "contextmenu",
+    "selectstart",
+    "mousedown",
+    "mouseup",
+    "keydown"
+  ];
 
-  document.body.appendChild(badge);
+  blockEvents.forEach(event => {
+    window.addEventListener(
+      event,
+      e => {
+        e.stopPropagation();
+      },
+      true
+    );
+  });
 
-  setTimeout(() => {
-    badge.remove();
-  }, 2500);
+  // =========================
+  // Remove handlers inline
+  // =========================
+
+  const clearHandlers = el => {
+    if (!el) return;
+
+    el.oncopy = null;
+    el.oncut = null;
+    el.onpaste = null;
+    el.oncontextmenu = null;
+    el.onselectstart = null;
+    el.onmousedown = null;
+    el.onmouseup = null;
+    el.onkeydown = null;
+  };
+
+  clearHandlers(document);
+  clearHandlers(document.body);
+  clearHandlers(document.documentElement);
+
 })();
