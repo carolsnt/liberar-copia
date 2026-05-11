@@ -1,9 +1,36 @@
 (() => {
 
-  console.log("✔️ Liberar Cópia ativo");
+  console.log("✔️ Liberar Cópia Nuclear ativo");
 
   // =========================
-  // BLOQUEIA listeners anti-cópia
+  // Intercepta preventDefault
+  // =========================
+
+  const originalPreventDefault = Event.prototype.preventDefault;
+
+  Event.prototype.preventDefault = function () {
+
+    const blocked = [
+      "copy",
+      "cut",
+      "paste",
+      "contextmenu",
+      "selectstart",
+      "mousedown",
+      "mouseup",
+      "keydown"
+    ];
+
+    if (blocked.includes(this.type)) {
+      console.log("🚫 preventDefault bloqueado:", this.type);
+      return;
+    }
+
+    return originalPreventDefault.call(this);
+  };
+
+  // =========================
+  // Intercepta addEventListener
   // =========================
 
   const blockedEvents = [
@@ -20,14 +47,14 @@
   const originalAddEventListener =
     EventTarget.prototype.addEventListener;
 
-  EventTarget.prototype.addEventListener = function(
+  EventTarget.prototype.addEventListener = function (
     type,
     listener,
     options
   ) {
 
     if (blockedEvents.includes(type)) {
-      console.log("🚫 Evento bloqueado:", type);
+      console.log("🚫 Listener bloqueado:", type);
       return;
     }
 
@@ -45,24 +72,17 @@
 
   const style = document.createElement("style");
 
-  style.id = "lc-style";
-
   style.innerHTML = `
     * {
       user-select: text !important;
       -webkit-user-select: text !important;
       -moz-user-select: text !important;
       -ms-user-select: text !important;
-      -webkit-touch-callout: default !important;
+      pointer-events: auto !important;
     }
 
     ::selection {
-      background: rgba(0, 140, 255, 0.45) !important;
-      color: #000 !important;
-    }
-
-    ::-moz-selection {
-      background: rgba(0, 140, 255, 0.45) !important;
+      background: rgba(0,140,255,.45) !important;
       color: #000 !important;
     }
   `;
@@ -70,7 +90,7 @@
   document.documentElement.appendChild(style);
 
   // =========================
-  // Limpa handlers inline
+  // Remove handlers inline
   // =========================
 
   const clearHandlers = el => {
@@ -87,43 +107,44 @@
     el.onkeydown = null;
   };
 
-  clearHandlers(document);
-  clearHandlers(document.body);
-  clearHandlers(document.documentElement);
+  const cleanAll = () => {
+
+    clearHandlers(document);
+    clearHandlers(document.body);
+    clearHandlers(document.documentElement);
+
+    document.querySelectorAll("*").forEach(clearHandlers);
+  };
+
+  cleanAll();
 
   // =========================
-  // Modo força bruta
+  // Reexecuta limpeza
   // =========================
 
-  document.body.contentEditable = true;
-  document.designMode = "on";
+  setInterval(cleanAll, 1000);
 
   // =========================
-  // Badge visual
+  // MutationObserver
   // =========================
 
-  const badge = document.createElement("div");
-
-  badge.innerText = "Liberar Cópia ON";
-
-  Object.assign(badge.style, {
-    position: "fixed",
-    bottom: "20px",
-    right: "20px",
-    zIndex: "999999999",
-    padding: "10px 14px",
-    background: "rgba(0,140,255,0.9)",
-    color: "#fff",
-    borderRadius: "12px",
-    fontFamily: "sans-serif",
-    fontSize: "14px",
-    boxShadow: "0 4px 12px rgba(0,0,0,.2)"
+  const observer = new MutationObserver(() => {
+    cleanAll();
   });
 
-  document.body.appendChild(badge);
+  observer.observe(document, {
+    childList: true,
+    subtree: true
+  });
 
-  setTimeout(() => {
-    badge.remove();
-  }, 2500);
+  // =========================
+  // Força modo editável
+  // =========================
+
+  document.designMode = "on";
+
+  if (document.body) {
+    document.body.contentEditable = true;
+  }
 
 })();

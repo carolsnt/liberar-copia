@@ -1,8 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Liberar Cópia",
-  "version": "3.0",
-  "description": "Remove bloqueios de cópia automaticamente.",
+  "version": "4.0",
 
   "host_permissions": [
     "<all_urls>"
@@ -12,7 +11,8 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "run_at": "document_start"
+      "run_at": "document_start",
+      "all_frames": true
     }
   ]
 }
