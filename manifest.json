@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Liberar Cópia",
-  "version": "2.0",
-  "description": "Remove bloqueios de cópia e seleção automaticamente.",
+  "version": "3.0",
+  "description": "Remove bloqueios de cópia automaticamente.",
 
   "host_permissions": [
     "<all_urls>"
