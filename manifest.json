@@ -1,13 +1,20 @@
 {
   "manifest_version": 3,
   "name": "Liberar Cópia",
-  "version": "1.0",
-  "description": "Remove bloqueios de cópia e seleção de texto nos sites.",
-  "permissions": ["scripting", "activeTab"],
+  "version": "2.0",
+  "description": "Permite seleção e cópia de texto em sites que bloqueiam. Ativação por domínio.",
+  "permissions": ["scripting", "activeTab", "storage", "tabs"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Liberar Cópia"
-  }
+    "default_title": "Liberar Cópia (clique para ativar/desativar neste site)"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["main-world.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
